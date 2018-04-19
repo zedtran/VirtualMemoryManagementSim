@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include "vmtable.h"  /* Include the header (not strictly necessary here) */
 
-
-
 /*
     Creates a Table that Contains array indexable values for Page
     Number and Frame Number for direct translation lookaside buffer (TLB)
@@ -13,9 +11,9 @@
     Traverse with for loop using the following syntax:
 }
 */
-vmTable* createVMtable(int length)
+vmTable_t* createVMtable(int length)
 {
-    vmTable* new_table = malloc(sizeof(vmTable));
+    vmTable_t* new_table = malloc(sizeof(vmTable_t));
     new_table->length = length;
     new_table->pageNumArr = malloc(sizeof(int) * length);
     new_table->frameNumArr = malloc(sizeof(int) * length);
@@ -25,15 +23,14 @@ vmTable* createVMtable(int length)
 
     // If there is not enough memory to make call to malloc(), we must free memory
     if(new_table == NULL || new_table->pageNumArr == NULL || new_table->frameNumArr == NULL) {
-        printf("Error - Could not allocate a new Virtual Memory Addressing Table!\n");
-        free(new_table);
+        printf("Error - Could not allocate a new Virtual Memory Addressing Table!\r\n");
+        exit(-1);
     }
-
     return new_table;
 }
 
 // Method to free dynamically allocated memory
-void freeVMtable(vmTable** table)
+void freeVMtable(vmTable_t** table)
 {
     for (int i = 0; i < table->length; i++) {
         free(table->(*pageNumArr)[i]);
@@ -45,7 +42,7 @@ void freeVMtable(vmTable** table)
 }
 
 // This function prints contents of the vmTable
-void displayTable(vmTable** tableToView)
+void displayTable(vmTable_t** tableToView)
 {
     printf("\n********************* TABLE or BUFFER START ****************************\n ");
     for (int i = 0; i < tableToView->length; i++) {
@@ -90,14 +87,14 @@ int** dramAllocate(int frameCount, int blockSize)
     }
     // If there is not enough memory to make call to malloc(), we must free memory
     if(temp == NULL) {
-        printf("Error - Could not allocate a new Physical Memory Matrix using dramAllocate() function!\n");
-        free(temp);
+        printf("Error - Could not allocate a new Physical Memory Matrix using dramAllocate() function!\r\n");
+        exit(-1);
     }
     return temp;
 }
 
 // Will free dram memory after usage
-void free_dram(int*** dblPtrArr, int frameCount)
+void freeDRAM(int*** dblPtrArr, int frameCount)
 {
   for (int i = 0; i < frameCount; i++) {
       free((*dblPtrArr)[i]);

@@ -1,5 +1,5 @@
-#ifndef VMTABLE_H_   /* Include guard */
-#define VMTABLE_H_
+#ifndef VMTYPES_H_   /* Include guard */
+#define VMTYPES_H_
 
 /*
     SOURCES USED:
@@ -10,23 +10,23 @@
         (4) More dynamic allocation: https://www.youtube.com/watch?v=t72BzxMAQKs
         (5) Double Pointer Return Type: https://stackoverflow.com/a/4339353
         (6) How to Perform Bit Masking: https://stackoverflow.com/a/10493604
+        (7) Proper malloc() error output and exiting: https://stackoverflow.com/a/2574771
 
 */
 
-typedef enum { false = 0, true = !false } bool;
 
 /*
     Defines a Virtual Memory Addressing table that can be
     represented as either a TLB cache or Page Table
 */
-typedef struct vmTable {
+typedef struct vmTable_t {
     int *pageNumArr; // page number array
     int *frameNumArr; // frame number array for this
     int length;
     int pageFaultCount;
     int tlbHitCount;
     int tlbMissCount;
-} vmTable;
+} vmTable_t;
 
 
 /*
@@ -76,17 +76,17 @@ typedef struct dramMatrix {
 
 // This function creates a new Virtual Memory Table for
 // Logical address referencing -- Can represent either the TLB or Page Table Cache
-vmTable* createVMtable(int length);
+vmTable_t* createVMtable(int length);
 
 // This function prints contents of the vmTable
-void displayTable(vmTable** tableToView);
+void displayTable(vmTable_t** tableToView);
 
 /* DECIDED NOT TO USE -- Too Complex to Implement, but keeping JIC I want to use/fix later
 // This function creates a physical memory sparse matrix
 dramMatrix* createDRAMmatrix(int frameCount, int frameSize);
 */
 // This function frees dynamically allocated memory
-void freeVMtable(vmTable** table);
+void freeVMtable(vmTable_t** table);
 
 // Accepts an int double pointer for creating simulated physical memory space
 int** dramAllocate(int frameCount, int blockSize);
@@ -102,4 +102,4 @@ int getPageNumber(int mask, int value, int shift);
 int getOffset(int mask, int value);
 
 
-#endif // VMTABLE_H_
+#endif // VMTYPES_H_

@@ -10,41 +10,32 @@
     (1) How to use fgets() function: https://stackoverflow.com/a/19609987
 */
 
-#define FRAME_SIZE 256        // size of each frame
-#define TOTAL_FRAME_COUNT 256  // total number of frames in physical memory
-
-#define PAGE_MASK  0xFF00  // Masks everything but the page number
-#define OFFSET_MASK  0xFF // Masks everything but the offset
-#define SHIFT 8 // Amount to shift when bitmasking
-
-#define TLB_SIZE 16       // size of the TLB
-#define PAGE_TABLE_SIZE 256  // size of the page table
-
-/*
-    The number of characters to read for each line from input file.
-    This is currently defined as 6 because our highest value is <= 65,536
-    We add 1 to account for the terminating character imposed by fgets
-*/
-#define MAX_ADDR_LEN 6
-
-#define PAGE_SIZE 256 // number of bytes to read
+#define FRAME_SIZE 256          // Size of each frame
+#define TOTAL_FRAME_COUNT 256   // Total number of frames in physical memory
+#define PAGE_MASK  0xFF00       // Masks everything but the page number
+#define OFFSET_MASK  0xFF       // Masks everything but the offset
+#define SHIFT 8                 // Amount to shift when bitmasking
+#define TLB_SIZE 16             // size of the TLB
+#define PAGE_TABLE_SIZE 256     // size of the page table
+#define MAX_ADDR_LEN 6          // The number of characters to read for each line from input file. strlen(value) + 1
+#define PAGE_READ_SIZE 256      // Number of bytes to read
 
 typedef enum { false = 0, true = !false } bool; // Simple true or false boolean -- unsure if I want to use yet
 
 /*
     vmTable is a generic struct defined type that is used to implement any
     number of caches for logical address translations. It contains the following components:
-        (1) uint32_t *pageNumArr; // page number array
-        (2) uint32_t *frameNumArr; // frame number array for this
+        (1) int *pageNumArr; // page number array
+        (2) int *frameNumArr; // frame number array for this
         (3) int length; // The table size
         (4) int pageFaultCount; // Represents number of page faults, if implemeneted as Page Table
         (5) int tlbHitCount; // Represents TLB hit count
         (6) int tlbMissCount; // Represents TLB misses
 */
 
-vmTable* tlbTable = createVMtable(TLB_SIZE); // The TLB Structure
+vmTable_t* tlbTable = createVMtable(TLB_SIZE); // The TLB Structure
 
-vmTable* pageTable = createVMtable(PAGE_TABLE_SIZE); // The Page Table
+vmTable_t* pageTable = createVMtable(PAGE_TABLE_SIZE); // The Page Table
 
 int** dram = dramAllocate(TOTAL_FRAME_COUNT, FRAME_SIZE); // Physical Memory
 
@@ -64,7 +55,7 @@ int page_number;
 int offset_number;
 
 // the buffer containing reads from backing store
-signed char fileReadBuffer[PAGE_SIZE];
+signed char fileReadBuffer[PAGE_READ_SIZE];
 
 // the translatedValue of the byte (signed char) in memory
 signed char translatedValue;
@@ -107,15 +98,34 @@ int main(int argc, char *argv[])
         virtual_addr = atoi(addressReadBuffer); // converting from ascii to int
 
         // 32-bit masking function to extract page number
-        int page_number = getPageNumber(PAGE_MASK, virtual_addr, SHIFT);
+        page_number = getPageNumber(PAGE_MASK, virtual_addr, SHIFT);
 
         // 32-bit masking function to extract page offset
-        int offset_number = getOffset(OFFSET_MASK, virtual_addr);
+        offset_number = getOffset(OFFSET_MASK, virtual_addr);
 
         // get the physical address and translatedValue stored at that address
         translateAddress();
         translationCount++;  // increment the number of translated addresses
     }
+    /*
+    Welcome to Your Don's VM Simulator Version 1.0
+    Number of logical pages: 256
+    Page size: 256 bytes
+    Page table size: 256
+    TLB size: 16 entries
+    Number of physical frames: 256
+    Physical memory size: 65,536 bytes
+    Display Physical Addresses? [yes or no] Yes
+    Choose TLB Replacement Strategy [1: FIFO, 2: LRU] 1
+    Virtual address: 28720; Physical address: 48; Value: 0
+    Virtual address: 24976; Physical address: 400; Value: 0
+    Virtual address: 24112; Physical address: 560; Value: 0
+    Virtual address: 49454; Physical address: 814; Value: 48
+    ……
+    Page fault rate: 48%
+    TLB hit rate: 7.5%
+    Check the results in the outputfile: vm_sim_output.txt
+    */
 
     // calculate and print out the stats
     printf("Number of translated addresses = %d\n", translationCount);
@@ -134,7 +144,7 @@ int main(int argc, char *argv[])
     // NOTE: REMEMBER TO FREE DYNAMICALLY ALLOCATED MEMORY
     freeVMtable(&tlbTable);
     freeVMtable(&pageTable);
-    free_dram(&dram);
+    freeDRAM(&dram);
     return 0;
 }
 
@@ -143,7 +153,8 @@ int main(int argc, char *argv[])
     This function takes the virtual address and translates
     into physical addressing, and retrieves the translatedValue stored
  */
-void translateAddress() {
+void translateAddress()
+{
     // First try to get page from TLB
     int frame_number = NULL; // Assigning NULL frame_number means invalid initially
 
@@ -181,20 +192,51 @@ void translateAddress() {
         }
     }
 
-    insertIntoTLB(page_number, frame_number);  // call to function to insert the page number and frame number into the TLB
+    // Call function to insert the page number and frame number into the TLB
+    insertIntoTLB(page_number, frame_number);
 
-    translatedValue = dram[frame_number][offset];  // frame number and offset used to get the signed translatedValue stored at that address
+    // Frame number and offset used to get the signed translatedValue stored at that address
+    translatedValue = dram[frame_number][offset];
 
     printf("frame number: %d\n", frame_number);
     printf("offset: %d\n", offset);
+
     // output the virtual address, physical address and translatedValue of the signed char to the console
-    printf("Virtual address: %d Physical address: %d Value: %d\n", virtual_addr, (frame_number << 8) | offset, translatedValue);
+    printf("Virtual address: %d Physical address: %d Value: %d\n", virtual_addr, (frame_number << SHIFT) | offset, translatedValue);
+}
+
+// Function to read from the backing store and bring the frame into physical memory and the page table
+void readFromStore(int pageNumber)
+{
+    // first seek to byte PAGE_READ_SIZE in the backing store
+    // SEEK_SET in fseek() seeks from the beginning of the file
+    if (fseek(backing_store, pageNumber * PAGE_READ_SIZE, SEEK_SET) != 0) {
+        fprintf(stderr, "Error seeking in backing store\n");
+    }
+
+    // now read PAGE_READ_SIZE bytes from the backing store to the fileReadBuffer
+    if (fread(fileReadBuffer, sizeof(signed char), PAGE_READ_SIZE, backing_store) == 0) {
+        fprintf(stderr, "Error reading from backing store\n");
+    }
+
+    // Load the bits into the first available frame in the physical memory 2D array
+    for (int i = 0; i < PAGE_READ_SIZE; i++) {
+        dram[nextFrame][i] = fileReadBuffer[i];
+    }
+
+    // Then we want to load the frame number into the page table in the next frame
+    pageTable->pageNumArr[nextPage] = pageNumber;
+    pageTable->frameNumArr[nextPage] = nextFrame;
+
+    // increment the counters that track the next available frames
+    nextFrame++;
+    nextPage++;
 }
 
 
-
 // function to insert a page number and frame number into the TLB with a FIFO replacement
-void insertIntoTLB(int pageNumber, int frameNumber){
+void insertIntoTLB(int pageNumber, int frameNumber)
+{
 
     int i;  // if it's already in the TLB, break
     for(i = 0; i < nextTLBentry; i++){
@@ -244,31 +286,4 @@ void insertIntoTLB(int pageNumber, int frameNumber){
     if(nextTLBentry < TLB_SIZE) { // if there is still room in the arrays, increment the number of entries
         nextTLBentry++;
     }
-}
-
-// function to read from the backing store and bring the frame into physical memory and the page table
-void readFromStore(int pageNumber){
-    // first seek to byte PAGE_SIZE in the backing store
-    // SEEK_SET in fseek() seeks from the beginning of the file
-    if (fseek(backing_store, pageNumber * PAGE_SIZE, SEEK_SET) != 0) {
-        fprintf(stderr, "Error seeking in backing store\n");
-    }
-
-    // now read PAGE_SIZE bytes from the backing store to the fileReadBuffer
-    if (fread(fileReadBuffer, sizeof(signed char), PAGE_SIZE, backing_store) == 0) {
-        fprintf(stderr, "Error reading from backing store\n");
-    }
-
-    // Load the bits into the first available frame in the physical memory 2D array
-    for (int i = 0; i < PAGE_SIZE; i++) {
-        dram[nextFrame][i] = fileReadBuffer[i];
-    }
-
-    // Then we want to load the frame number into the page table in the next frame
-    pageTable->pageNumArr[nextPage] = pageNumber;
-    pageTable->frameNumArr[nextPage] = nextFrame;
-
-    // increment the counters that track the next available frames
-    nextFrame++;
-    nextPage++;
 }
