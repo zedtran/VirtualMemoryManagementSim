@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <alloca.h>
-#include "vmtable.h"
+#include "vmtypes.h"
 
 /*
     Souces Cited:
@@ -63,7 +63,8 @@ signed char translatedValue;
 // Function Prototypes
 void translateAddress();
 void readFromStore(int pageNumber);
-void insertIntoTLB(int pageNumber, int frameNumber);
+void tlbFIFOinsert(int pageNumber, int frameNumber);
+// void tlbLRUinsert(int pageNumber, int frameNumber);
 
 
 // main opens necessary files and calls on translateAddress for every entry in the addresses file
@@ -193,7 +194,7 @@ void translateAddress()
     }
 
     // Call function to insert the page number and frame number into the TLB
-    insertIntoTLB(page_number, frame_number);
+    tlbFIFOinsert(page_number, frame_number);
 
     // Frame number and offset used to get the signed translatedValue stored at that address
     translatedValue = dram[frame_number][offset];
@@ -234,8 +235,8 @@ void readFromStore(int pageNumber)
 }
 
 
-// function to insert a page number and frame number into the TLB with a FIFO replacement
-void insertIntoTLB(int pageNumber, int frameNumber)
+// Function to insert a page number and frame number into the TLB with a FIFO replacement
+void tlbFIFOinsert(int pageNumber, int frameNumber)
 {
 
     int i;  // if it's already in the TLB, break

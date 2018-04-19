@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "vmtable.h"  /* Include the header (not strictly necessary here) */
+#include "vmtypes.h"  /* Include the header (not strictly necessary here) */
 
 /*
     Creates a Table that Contains array indexable values for Page
     Number and Frame Number for direct translation lookaside buffer (TLB)
     or page table entry (PTE).
     @Param length Represents the length of the constructed internal arrays
-    Traverse with for loop using the following syntax:
 }
 */
 vmTable_t* createVMtable(int length)

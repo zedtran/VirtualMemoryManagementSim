@@ -92,7 +92,7 @@ void freeVMtable(vmTable_t** table);
 int** dramAllocate(int frameCount, int blockSize);
 
 // Will free dram memory after usage
-void free_dram(int*** dblPtrArr, int frameCount);
+void freeDRAM(int*** dblPtrArr, int frameCount);
 
 
 // 32-Bit masking function to extract page number
