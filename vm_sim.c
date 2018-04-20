@@ -8,6 +8,14 @@
 /*
     Souces Cited:
     (1) How to use fgets() function: https://stackoverflow.com/a/19609987
+
+    Compiled using clang compiler:
+        <-> "$ clang -o vm_sim vm_sim.c vmtypes.c"
+        <-> "$ ./vm_sim InputFile.txt"
+
+    //TODO:
+    (1) Compile message states that we are attempting to free memory that was not allocated at the end of program execution.
+        Need to find out if it's coming from freeVMtable() or freeDRAM() function. 
 */
 
 #define FRAME_SIZE 256          // Size of each frame
