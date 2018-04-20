@@ -31,12 +31,8 @@ vmTable_t* createVMtable(int length)
 // Method to free dynamically allocated memory
 void freeVMtable(vmTable_t** table)
 {
-    for (int i = 0; i < table->length; i++) {
-        free(table->(*pageNumArr)[i]);
-        free(table->(*frameNumArr)[i]);
-    }
-    free(table->pageNumArr);
-    free(table->frameNumArr);
+    free((*table)->pageNumArr);
+    free((*table)->frameNumArr);
     free(table);
 }
 
@@ -44,8 +40,8 @@ void freeVMtable(vmTable_t** table)
 void displayTable(vmTable_t** tableToView)
 {
     printf("\n********************* TABLE or BUFFER START ****************************\n ");
-    for (int i = 0; i < tableToView->length; i++) {
-        printf("Index(%d) := Page Number: %d\tFrame Number: %d\n", i, tableToView->pageNumArr[i], tableToView->frameNumArr[i]);
+    for (int i = 0; i < (*tableToView)->length; i++) {
+        printf("Index(%d) := Page Number: %d\tFrame Number: %d\n", i, (*tableToView)->pageNumArr[i], (*tableToView)->frameNumArr[i]);
     }
     printf("\n********************* TABLE or BUFFER END ***************************\n ");
 }
@@ -77,10 +73,10 @@ dramMatrix* createDRAMmatrix(int frameCount, int frameSize)
 int** dramAllocate(int frameCount, int blockSize)
 {
     int** temp;
-    temp = malloc(frameCountSize * sizeof(int*));
-    for(int i = 0; i< frameCountSize; i++) {
+    temp = malloc(frameCount * sizeof(int*));
+    for(int i = 0; i< frameCount; i++) {
         temp[i] = (int*)malloc(sizeof(int) * blockSize);
-        for(int j = 0; j < c; j++) {
+        for(int j = 0; j < blockSize; j++) {
             temp[i][j] = 0;
         }
     }

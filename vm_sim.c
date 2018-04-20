@@ -33,11 +33,9 @@ typedef enum { false = 0, true = !false } bool; // Simple true or false boolean 
         (6) int tlbMissCount; // Represents TLB misses
 */
 
-vmTable_t* tlbTable = createVMtable(TLB_SIZE); // The TLB Structure
-
-vmTable_t* pageTable = createVMtable(PAGE_TABLE_SIZE); // The Page Table
-
-int** dram = dramAllocate(TOTAL_FRAME_COUNT, FRAME_SIZE); // Physical Memory
+vmTable_t* tlbTable; // The TLB Structure
+vmTable_t* pageTable; // The Page Table
+int** dram; // Physical Memory
 
 
 int nextTLBentry = 0; // Tracks the next available index of entry into the TLB
@@ -70,11 +68,15 @@ void tlbFIFOinsert(int pageNumber, int frameNumber);
 // main opens necessary files and calls on translateAddress for every entry in the addresses file
 int main(int argc, char *argv[])
 {
+    tlbTable = createVMtable(TLB_SIZE); // The TLB Structure
+    pageTable = createVMtable(PAGE_TABLE_SIZE); // The Page Table
+    dram = dramAllocate(TOTAL_FRAME_COUNT, FRAME_SIZE); // Physical Memory
+
     int translationCount = 0;
 
     // perform basic error checking
     if (argc != 2) {
-        fprintf(stderr,"Usage: ./a.out [input file]\n");
+        fprintf(stderr,"Usage: ./vm_sim [input file]\n");
         return -1;
     }
 
@@ -129,14 +131,14 @@ int main(int argc, char *argv[])
     */
 
     // calculate and print out the stats
-    printf("Number of translated addresses = %d\n", translationCount);
-    double pfRate = pageFaults / (double)translationCount;
-    double TLBRate = TLBHits / (double)translationCount;
+    printf("\n\nNumber of translated addresses = %d\n", translationCount);
+    double pfRate = (double) pageTable->pageFaultCount / (double)translationCount;
+    double TLBRate = (double) tlbTable->tlbHitCount / (double)translationCount;
 
-    printf("Page Faults = %d\n", pageFaults);
+    printf("Page Faults = %d\n", pageTable->pageFaultCount);
     printf("Page Fault Rate = %.3f\n",pfRate);
-    printf("TLB Hits = %d\n", TLBHits);
-    printf("TLB Hit Rate = %.3f\n", TLBRate);
+    printf("TLB Hits = %d\n", tlbTable->tlbHitCount);
+    printf("TLB Hit Rate = %.3f\n\n", TLBRate);
 
     // close the input file and backing store
     fclose(address_file);
@@ -145,7 +147,7 @@ int main(int argc, char *argv[])
     // NOTE: REMEMBER TO FREE DYNAMICALLY ALLOCATED MEMORY
     freeVMtable(&tlbTable);
     freeVMtable(&pageTable);
-    freeDRAM(&dram);
+    freeDRAM(&dram, TOTAL_FRAME_COUNT);
     return 0;
 }
 
@@ -157,7 +159,7 @@ int main(int argc, char *argv[])
 void translateAddress()
 {
     // First try to get page from TLB
-    int frame_number = NULL; // Assigning NULL frame_number means invalid initially
+    int frame_number = -1; // Assigning -1 to frame_number means invalid initially
 
     /*
         Look through the TLB to see if memory page exists.
@@ -176,7 +178,7 @@ void translateAddress()
         the page table to see if the page number exists. If not on page table,
         read secondary storage (dram) and increment page table fault count.
     */
-    if (frame_number == NULL) {
+    if (frame_number == -1) {
         // walk the contents of the page table
         for(int i = 0; i < nextPage; i++){
             if(pageTable->pageNumArr[i] == page_number){  // if the page is found in those contents
@@ -185,7 +187,7 @@ void translateAddress()
             }
         }
         // NOTE: Page Table Fault Encountered
-        if(frame_number == NULL) {  // if the page is not found in those contents
+        if(frame_number == -1) {  // if the page is not found in those contents
             // page fault, call to readFromStore to get the frame into physical memory and the page table
             readFromStore(page_number);
             pageTable->pageFaultCount++;   // increment the number of page faults
@@ -197,13 +199,12 @@ void translateAddress()
     tlbFIFOinsert(page_number, frame_number);
 
     // Frame number and offset used to get the signed translatedValue stored at that address
-    translatedValue = dram[frame_number][offset];
+    translatedValue = dram[frame_number][offset_number];
 
-    printf("frame number: %d\n", frame_number);
-    printf("offset: %d\n", offset);
+    printf("\nFrame Number: %d; Offset: %d; ", frame_number, offset_number);
 
     // output the virtual address, physical address and translatedValue of the signed char to the console
-    printf("Virtual address: %d Physical address: %d Value: %d\n", virtual_addr, (frame_number << SHIFT) | offset, translatedValue);
+    printf("Virtual address: %d Physical address: %d Value: %d", virtual_addr, (frame_number << SHIFT) | offset_number, translatedValue);
 }
 
 // Function to read from the backing store and bring the frame into physical memory and the page table
