@@ -2,20 +2,6 @@
 #define VMTYPES_H_
 
 /*
-    SOURCES USED:
-        (1) For how to create smart arrays: https://www.youtube.com/watch?v=QhwFwWpq4dQ
-        (2) Dynamic Allocation of 2D Array in struct: https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/
-        (3) For creating physical memory struct:
-            https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf
-        (4) More dynamic allocation: https://www.youtube.com/watch?v=t72BzxMAQKs
-        (5) Double Pointer Return Type: https://stackoverflow.com/a/4339353
-        (6) How to Perform Bit Masking: https://stackoverflow.com/a/10493604
-        (7) Proper malloc() error output and exiting: https://stackoverflow.com/a/2574771
-
-*/
-
-
-/*
     Defines a Virtual Memory Addressing table that can be
     represented as either a TLB cache or Page Table
 */

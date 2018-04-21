@@ -7,8 +7,9 @@
     Creates a Table that Contains array indexable values for Page
     Number and Frame Number for direct translation lookaside buffer (TLB)
     or page table entry (PTE).
-    @Param length Represents the length of the constructed internal arrays
-}
+
+    @Param  {length}       Represents the int length of the constructed internal arrays
+    @Return {vmTable_t*}   A pointer to the the created table which will represent either the TLB or Page Table
 */
 vmTable_t* createVMtable(int length)
 {
@@ -27,16 +28,22 @@ vmTable_t* createVMtable(int length)
     }
     return new_table;
 }
+/*
+    Method to free dynamically allocated memory
 
-// Method to free dynamically allocated memory
+    @Param {table} The TLB or Page Table we want to clear from memory
+*/
 void freeVMtable(vmTable_t** table)
 {
     free((*table)->pageNumArr);
     free((*table)->frameNumArr);
     free(table);
 }
+/*
+    This function prints contents of the vmTable
 
-// This function prints contents of the vmTable
+    @Param {tableToView} The TLB or Page Table who's contents we want to view in console
+*/
 void displayTable(vmTable_t** tableToView)
 {
     printf("\n********************* TABLE or BUFFER START ****************************\n ");
@@ -68,8 +75,13 @@ dramMatrix* createDRAMmatrix(int frameCount, int frameSize)
 }
 
 */
+/*
+    Creating simulated physical memory space
 
-// Accepts an int double pointer for creating simulated physical memory space
+    @Param  {frameCount} The number of frames we want to represent in physical memory
+    @Param  {blockSize}  The number of offsets we want per physical memory frame
+    @Return {int**}      The dynamically allocated physical memory space
+*/
 int** dramAllocate(int frameCount, int blockSize)
 {
     int** temp;
@@ -87,8 +99,12 @@ int** dramAllocate(int frameCount, int blockSize)
     }
     return temp;
 }
+/*
+    Will free dram memory after usage
 
-// Will free dram memory after usage
+    @Param {dblPtrArr}  The physical memory we want to clear
+    @Param {frameCount} The number of frames in the specified physical memory
+*/
 void freeDRAM(int*** dblPtrArr, int frameCount)
 {
   for (int i = 0; i < frameCount; i++) {
@@ -101,6 +117,11 @@ void freeDRAM(int*** dblPtrArr, int frameCount)
     32-Bit masking function to extract page number
     This function assumes a high order page number and
     a low order page offset
+
+    @Param {mask}   The int masking value we will use to perform AND operation w.r.t. value
+    @Param {value}  The int value we wish to mask
+    @Param {shift}  The relative number of bits we want to shift right after the bitwise operation
+    @Return {int}   The int representation for Page Number
 */
 int getPageNumber(int mask, int value, int shift) {
    return ((value & mask)>>shift);
@@ -110,6 +131,10 @@ int getPageNumber(int mask, int value, int shift) {
     32-Bit masking function to extract physical memory offset
     This function assumes a high order page number and
     a low order page offset
+
+    @Param {mask}   The int masking value we will use to perform AND operation w.r.t. value
+    @Param {value}  The int value we wish to mask
+    @Return {int}   The int representation for physical memory offset
 */
 int getOffset(int mask, int value) {
    return value & mask;
