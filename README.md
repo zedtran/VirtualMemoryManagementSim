@@ -44,16 +44,16 @@ For example, if a logical address with page number 15 triggers a page fault, you
 
 ## Relevant Sources Cited
 
-   :(P): [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
-   (P) [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
-   (P) [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
-   (P) [More dynamic allocation](https://www.youtube.com/watch?v=t72BzxMAQKs)
-   (P) [Double Pointer Return Type](https://stackoverflow.com/a/4339353)
-   (P) [How to Perform Bit Masking](https://stackoverflow.com/a/10493604)
-   (P) [Proper malloc() error output and exiting](https://stackoverflow.com/a/2574771)
-   (P) [How to use fgets() function](https://stackoverflow.com/a/19609987)
-   (P) [How to measure clock time](https://stackoverflow.com/a/12743207)
-   (P)  ==NOTE==: Other sources were also used to gain understanding of Virtual Memory Management concepts
+   * [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
+   * [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
+   * [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
+   * [More dynamic allocation](https://www.youtube.com/watch?v=t72BzxMAQKs)
+   * [Double Pointer Return Type](https://stackoverflow.com/a/4339353)
+   * [How to Perform Bit Masking](https://stackoverflow.com/a/10493604)
+   * [Proper malloc() error output and exiting](https://stackoverflow.com/a/2574771)
+   * [How to use fgets() function](https://stackoverflow.com/a/19609987)
+   * [How to measure clock time](https://stackoverflow.com/a/12743207)
+   *  <b>NOTE</b>: Other sources were also used to gain understanding of Virtual Memory Management concepts
 
 ## Sample Input/Output
 
