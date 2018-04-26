@@ -1,8 +1,8 @@
 # VirtualMemoryManagementSim
-A Virtual Memory Management Simulation in C to Illustrate Logical Address Translation
+A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2^(16) - 1. This file is the main Program file and uses the associated vmtypes.h/.c files to implement data structure design for the Physical Memory, TLB, and Page Table.
 
 ## Overview
-This project is the design and implemtation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a file containing a list of logical addresses ([InputFile.txt](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt)), (2) translate logical addresses into physical addresses for a virtual address space of size 216 = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
+This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a file containing a list of logical addresses ([InputFile.txt](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt)), (2) translate logical addresses into physical addresses for a virtual address space of size 216 = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
 
 ## Information about the Simulated Virtual Memory
 16-bit Logical Addresses
@@ -11,23 +11,18 @@ The program reads a file containing a list of 32-bit integer numbers, which repr
         |-----------------------------------------------------------------------|
         |           Page Number             |             Offset                |
         |:---------------------------------:|:---------------------------------:|
-        |           Bits 15 - 8             |           Bits 7 - 0              | 
+        |           Bits 15 - 8             |           Bits 7 - 0              |
         |-----------------------------------------------------------------------|
 
 ## System Parameters of the Virtual Memory
 The page table size is 28; the TLB contains 16 entries. The page size is 28 bytes, which is the same as the frame size. There are a total of 256 frames in the physical memory, meaning that the total physical memory capability is 65,536 bytes (i.e., 256 frames * 256 bytes/frame). The system parameters of the simulated virtual memory is summarized below.
 
-> Page table size: 28
-
-> Number of TLB entries: 16
-
-> Page size: 28 bytes
-
-> Frame size: 28 bytes
-
-> Number of frames: 256
-
-> Physical memory size: 65,536 bytes
+* Page table size: _28_
+* Number of TLB entries: _16_
+* Page size: _28 bytes_
+* Frame size: _28 bytes_
+* Number of frames: _256_
+* Physical memory size: _65,536 bytes_
 
 ## How Page Faults are Handled
 This virtual memory system implements demand paging. The backing store is simulated by a file called “BACKING_STORE.bin”. BACKING_STORE is a binary file of 65,536 bytes. When a page fault occurs, the virtual memory system will perform the following four steps:
@@ -39,7 +34,14 @@ This virtual memory system implements demand paging. The backing store is simula
 
 For example, if a logical address with page number 15 triggers a page fault, your virtual memory system will read in page 15 from the file BACKING_STORE. Then, the loaded page frame is placed in the physical memory. After the page frame is fetched from the disk, the page table and the TLB will be updated accordingly. Subsequent access of page 15 will be referenced by accessing either the TLB or the page table.
 
-### Sample Input/Output
+## Compilation and Program Execution
+[x] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
+[x] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
+[x] Created Makefile with gcc as Constant
+[x] SIMPLY download this project and execute `make` in command line
+[x] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
+
+## Sample Input/Output
 
 ```
 Welcome to Don's VM Simulator Version 1.0
