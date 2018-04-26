@@ -8,11 +8,11 @@ This project is the design and implementation of a standalone virtual memory man
 16-bit Logical Addresses
 The program reads a file containing a list of 32-bit integer numbers, which represent 32-bit logical addresses. It should be noted that the program only deals with 16-bit addresses. Thus, this simulation implements masking for the rightmost 16 bits of each logical address loaded from the file.
 
-        |-----------------------------------------------------------------------|
-        |           Page Number             |             Offset                |
-        |:---------------------------------:|:---------------------------------:|
-        |           Bits 15 - 8             |           Bits 7 - 0              |
-        |-----------------------------------------------------------------------|
+|-----------------------------------------------------------------------|
+|           Page Number             |             Offset                |
+|:---------------------------------:|:---------------------------------:|
+|           Bits 15 - 8             |           Bits 7 - 0              |
+|-----------------------------------------------------------------------|
 
 ## System Parameters of the Virtual Memory
 The page table size is 28; the TLB contains 16 entries. The page size is 28 bytes, which is the same as the frame size. There are a total of 256 frames in the physical memory, meaning that the total physical memory capability is 65,536 bytes (i.e., 256 frames * 256 bytes/frame). The system parameters of the simulated virtual memory is summarized below.
