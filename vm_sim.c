@@ -38,18 +38,10 @@
         (7) Proper malloc() error output and exiting: https://stackoverflow.com/a/2574771
         (8) How to use fgets() function: https://stackoverflow.com/a/19609987
 
-    Compile and Program Execution Commands:
+    COMPILE AND PROGRAM EXECUTION COMMANDS:
         (1) Compiled using clang compiler: $ clang -o vm_sim vm_sim.c vmtypes.c
         (2) Executed program with command: $ ./vm_sim InputFile.txt
 
-    TODO:
-        (1) Compile message states that we are attempting to free memory that was not
-            allocated at the end of program execution. Need to find out if it's coming
-            from freeVMtable() or freeDRAM() function.
-        (2) Need to implement LRU Replacement Strategy
-            Can use counters for each entry--initialized to zero, each time something is added,
-            The entry with the highest count needs to be replaced
-        (3) Need to implement menu 
 */
 
 #define FRAME_SIZE        256       // Size of each frame
@@ -59,7 +51,7 @@
 #define SHIFT             8         // Amount to shift when bitmasking
 #define TLB_SIZE          16        // size of the TLB
 #define PAGE_TABLE_SIZE   256       // size of the page table
-#define MAX_ADDR_LEN      6         // The number of characters to read for each line from input file. strlen(value) + 1
+#define MAX_ADDR_LEN      10         // The number of characters to read for each line from input file.
 #define PAGE_READ_SIZE    256       // Number of bytes to read
 
 typedef enum { false = 0, true = !false } bool; // Simple true or false boolean -- unsure if I want to use yet
@@ -69,15 +61,18 @@ typedef enum { false = 0, true = !false } bool; // Simple true or false boolean 
     number of caches for logical address translations. It contains the following components:
         (1) int *pageNumArr; // page number array
         (2) int *frameNumArr; // frame number array for this
-        (3) int length; // The table size
-        (4) int pageFaultCount; // Represents number of page faults, if implemeneted as Page Table
-        (5) int tlbHitCount; // Represents TLB hit count
-        (6) int tlbMissCount; // Represents TLB misses
+        (3) int *entryAgeArr; // the age of each entry
+        (4) int length; // The table size
+        (5) int pageFaultCount; // Represents number of page faults, if implemeneted as Page Table
+        (6) int tlbHitCount; // Represents TLB hit count
+        (7) int tlbMissCount; // Represents TLB misses
 */
 
 vmTable_t* tlbTable; // The TLB Structure
 vmTable_t* pageTable; // The Page Table
 int** dram; // Physical Memory
+char algo_choice; // menu stdin
+char display_choice; // menu stdin
 
 
 int nextTLBentry = 0; // Tracks the next available index of entry into the TLB
@@ -104,7 +99,8 @@ signed char translatedValue;
 void translateAddress();
 void readFromStore(int pageNumber);
 void tlbFIFOinsert(int pageNumber, int frameNumber);
-// void tlbLRUinsert(int pageNumber, int frameNumber);
+void tlbLRUinsert(int pageNumber, int frameNumber);
+int getOldestEntry(int tlbSize);
 
 
 // main opens necessary files and calls on translateAddress for every entry in the addresses file
@@ -113,7 +109,6 @@ int main(int argc, char *argv[])
     tlbTable = createVMtable(TLB_SIZE); // The TLB Structure
     pageTable = createVMtable(PAGE_TABLE_SIZE); // The Page Table
     dram = dramAllocate(TOTAL_FRAME_COUNT, FRAME_SIZE); // Physical Memory
-
     int translationCount = 0;
 
     // perform basic error checking
@@ -138,7 +133,23 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // read through the input file and output each virtual address
+    printf("\nWelcome to Don's VM Simulator Version 1.0");
+    printf("\nNumber of logical pages: %d\nPage size: %d bytes\nPage Table Size: %d\nTLB Size: %d entries\nNumber of Physical Frames: %d\nPhysical Memory Size: %d bytes", PAGE_TABLE_SIZE, PAGE_READ_SIZE, PAGE_TABLE_SIZE, TLB_SIZE, FRAME_SIZE, PAGE_READ_SIZE * FRAME_SIZE);
+
+
+    do {
+        printf("\n\nDisplay All Physical Addresses? [y/n]: ");
+        scanf("\n%c", &display_choice);
+    } while (display_choice != 'n' && display_choice != 'y');
+
+    do {
+        printf("Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: ");
+        scanf("\n%c", &algo_choice);
+    } while (algo_choice != '1' && algo_choice != '2');
+
+
+
+    // Read through the input file and output each virtual address
     while (fgets(addressReadBuffer, MAX_ADDR_LEN, address_file) != NULL) {
         virtual_addr = atoi(addressReadBuffer); // converting from ascii to int
 
@@ -148,39 +159,22 @@ int main(int argc, char *argv[])
         // 32-bit masking function to extract page offset
         offset_number = getOffset(OFFSET_MASK, virtual_addr);
 
-        // get the physical address and translatedValue stored at that address
-        translateAddress();
+        // Get the physical address and translatedValue stored at that address
+        translateAddress(algo_choice);
         translationCount++;  // increment the number of translated addresses
     }
-    /*
-    Welcome to Your Don's VM Simulator Version 1.0
-    Number of logical pages: 256
-    Page size: 256 bytes
-    Page table size: 256
-    TLB size: 16 entries
-    Number of physical frames: 256
-    Physical memory size: 65,536 bytes
-    Display Physical Addresses? [yes or no] Yes
-    Choose TLB Replacement Strategy [1: FIFO, 2: LRU] 1
-    Virtual address: 28720; Physical address: 48; Value: 0
-    Virtual address: 24976; Physical address: 400; Value: 0
-    Virtual address: 24112; Physical address: 560; Value: 0
-    Virtual address: 49454; Physical address: 814; Value: 48
-    ……
-    Page fault rate: 48%
-    TLB hit rate: 7.5%
-    Check the results in the outputfile: vm_sim_output.txt
-    */
 
+    printf("\n-------------------------------------------------------------------\n");
     // calculate and print out the stats
-    printf("\n\nNumber of translated addresses = %d\n", translationCount);
-    double pfRate = (double) pageTable->pageFaultCount / (double)translationCount;
-    double TLBRate = (double) tlbTable->tlbHitCount / (double)translationCount;
+    printf("\nNumber of translated addresses = %d\n", translationCount);
+    double pfRate = (double)pageTable->pageFaultCount / (double)translationCount;
+    double TLBRate = (double)tlbTable->tlbHitCount / (double)translationCount;
 
     printf("Page Faults = %d\n", pageTable->pageFaultCount);
-    printf("Page Fault Rate = %.3f\n",pfRate);
+    printf("Page Fault Rate = %.3f %%\n",pfRate * 100);
     printf("TLB Hits = %d\n", tlbTable->tlbHitCount);
-    printf("TLB Hit Rate = %.3f\n\n", TLBRate);
+    printf("TLB Hit Rate = %.3f %%\n", TLBRate * 100);
+    printf("\n-------------------------------------------------------------------\n");
 
     // close the input file and backing store
     fclose(address_file);
@@ -197,6 +191,7 @@ int main(int argc, char *argv[])
 /*
     This function takes the virtual address and translates
     into physical addressing, and retrieves the translatedValue stored
+    @Param algo_type Is '1' for tlbFIFOinsert and '2' for tlbLRUinsert
  */
 void translateAddress()
 {
@@ -211,6 +206,7 @@ void translateAddress()
         if (tlbTable->pageNumArr[i] == page_number) {
             frame_number = tlbTable->frameNumArr[i];
             tlbTable->tlbHitCount++;
+            break;
         }
     }
 
@@ -223,30 +219,37 @@ void translateAddress()
     if (frame_number == -1) {
         // walk the contents of the page table
         for(int i = 0; i < nextPage; i++){
-            if(pageTable->pageNumArr[i] == page_number){  // if the page is found in those contents
-                frame_number = pageTable->frameNumArr[i]; // extract the frame_number from its twin array
-                // NOTE: See if we can break here legally so we don't continue iterating if we don't have to
+            if(pageTable->pageNumArr[i] == page_number){  // If the page is found in those contents
+                frame_number = pageTable->frameNumArr[i]; // Extract the frame_number
+                break; // Found in pageTable
             }
         }
         // NOTE: Page Table Fault Encountered
         if(frame_number == -1) {  // if the page is not found in those contents
             // page fault, call to readFromStore to get the frame into physical memory and the page table
             readFromStore(page_number);
-            pageTable->pageFaultCount++;   // increment the number of page faults
-            frame_number = nextFrame - 1;  // and set the frame_number to the current nextFrame index
+            pageTable->pageFaultCount++;   // Increment the number of page faults
+            frame_number = nextFrame - 1;  // And set the frame_number to the current nextFrame index
         }
     }
 
-    // Call function to insert the page number and frame number into the TLB
-    tlbFIFOinsert(page_number, frame_number);
+    if (algo_choice == '1') {
+        // Call function to insert the page number and frame number into the TLB
+        tlbFIFOinsert(page_number, frame_number);
+    }
+    else {
+        tlbLRUinsert(page_number, frame_number);
+    }
 
     // Frame number and offset used to get the signed translatedValue stored at that address
     translatedValue = dram[frame_number][offset_number];
 
-    printf("\nFrame Number: %d; Offset: %d; ", frame_number, offset_number);
+    // FOR TESTING -- printf("\nFrame Number: %d; Offset: %d; ", frame_number, offset_number);
 
-    // output the virtual address, physical address and translatedValue of the signed char to the console
-    printf("Virtual address: %d Physical address: %d Value: %d", virtual_addr, (frame_number << SHIFT) | offset_number, translatedValue);
+    if (display_choice == 'y') {
+        // output the virtual address, physical address and translatedValue of the signed char to the console
+        printf("\nVirtual address: %d\t\tPhysical address: %d\t\tValue: %d", virtual_addr, (frame_number << SHIFT) | offset_number, translatedValue);
+    }
 }
 
 // Function to read from the backing store and bring the frame into physical memory and the page table
@@ -281,8 +284,9 @@ void readFromStore(int pageNumber)
 // Function to insert a page number and frame number into the TLB with a FIFO replacement
 void tlbFIFOinsert(int pageNumber, int frameNumber)
 {
+    int i;
 
-    int i;  // if it's already in the TLB, break
+    // If it's already in the TLB, break
     for(i = 0; i < nextTLBentry; i++){
         if(tlbTable->pageNumArr[i] == pageNumber){
             break;
@@ -309,25 +313,90 @@ void tlbFIFOinsert(int pageNumber, int frameNumber)
         }
     }
 
-    // if the index is not equal to the number of entries
+    // If the index is not equal to the number of entries
     else{
-        for(i = i; i < nextTLBentry - 1; i++){      // iterate through up to one less than the number of entries
+
+        for(i = i; i < nextTLBentry - 1; i++){  // iterate through up to one less than the number of entries
             // Move everything over in the arrays
             tlbTable->pageNumArr[i] = tlbTable->pageNumArr[i + 1];
             tlbTable->frameNumArr[i] = tlbTable->frameNumArr[i + 1];
         }
-        if(nextTLBentry < TLB_SIZE){                // if there is still room in the array, put the page and frame on the end
-             // insert the page and frame on the end
+        if(nextTLBentry < TLB_SIZE){  // if there is still room in the array, put the page and frame on the end
+             // Insert the page and frame on the end
             tlbTable->pageNumArr[nextTLBentry] = pageNumber;
             tlbTable->frameNumArr[nextTLBentry] = frameNumber;
 
         }
-        else{  // otherwise put the page and frame on the number of entries - 1
+        else{  // Otherwise put the page and frame on the number of entries - 1
             tlbTable->pageNumArr[nextTLBentry - 1] = pageNumber;
             tlbTable->frameNumArr[nextTLBentry - 1] = frameNumber;
         }
     }
-    if(nextTLBentry < TLB_SIZE) { // if there is still room in the arrays, increment the number of entries
+    if(nextTLBentry < TLB_SIZE) { // If there is still room in the arrays, increment the number of entries
         nextTLBentry++;
     }
+}
+
+
+// Function to insert a page number and frame number into the TLB with a LRU replacement
+void tlbLRUinsert(int pageNumber, int frameNumber)
+{
+
+    bool freeSpotFound = false;
+    bool alreadyThere = false;
+    int replaceIndex = -1;
+
+    // SEEK -- > Find the index to replace and increment age for all other entries
+    for (int i = 0; i < TLB_SIZE; i++) {
+        if ((tlbTable->pageNumArr[i] != pageNumber) && (tlbTable->pageNumArr[i] != 0)) {
+            // If entry is not in TLB and not a free spot, increment its age
+            tlbTable->entryAgeArr[i]++;
+        }
+        else if ((tlbTable->pageNumArr[i] != pageNumber) && (tlbTable->pageNumArr[i] == 0)) {
+            // Available spot in TLB found
+            if (!freeSpotFound) {
+                replaceIndex = i;
+                freeSpotFound = true;
+            }
+        }
+        else if (tlbTable->pageNumArr[i] == pageNumber) {
+            // Entry is already in TLB -- Reset its age
+            tlbTable->entryAgeArr[i] = 0;
+            alreadyThere = true;
+        }
+    }
+
+    // REPLACE
+    if (alreadyThere) {
+        return;
+    }
+    else if (freeSpotFound) { // If we found a free spot, insert
+        tlbTable->pageNumArr[replaceIndex] = pageNumber;    // Insert into free spot
+        tlbTable->frameNumArr[replaceIndex] = frameNumber;
+        tlbTable->entryAgeArr[replaceIndex] = 0;
+    }
+    else { // No more free spots -- Need to replace the oldest entry
+        replaceIndex = getOldestEntry(TLB_SIZE);
+        tlbTable->pageNumArr[replaceIndex] = pageNumber;    // Insert into oldest entry
+        tlbTable->frameNumArr[replaceIndex] = frameNumber;
+        tlbTable->entryAgeArr[replaceIndex] = 0;
+
+    }
+}
+
+
+// Finds the oldest entry in TLB and returns the replacement Index
+int getOldestEntry(int tlbSize) {
+  int i, max, index;
+
+  max = tlbTable->entryAgeArr[0];
+  index = 0;
+
+  for (i = 1; i < tlbSize; i++) {
+    if (tlbTable->entryAgeArr[i] > max) {
+       index = i;
+       max = tlbTable->entryAgeArr[i];
+    }
+  }
+  return index;
 }

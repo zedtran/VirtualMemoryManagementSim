@@ -17,11 +17,12 @@ vmTable_t* createVMtable(int length)
     new_table->length = length;
     new_table->pageNumArr = malloc(sizeof(int) * length);
     new_table->frameNumArr = malloc(sizeof(int) * length);
+    new_table->entryAgeArr = malloc(sizeof(int) * length);
     new_table->pageFaultCount = 0;
     new_table->tlbHitCount = 0;
     new_table->tlbMissCount = 0;
 
-    // If there is not enough memory to make call to malloc(), we must free memory
+    // If there is not enough memory on the heap to make a call to malloc() // Notify and Exit
     if(new_table == NULL || new_table->pageNumArr == NULL || new_table->frameNumArr == NULL) {
         printf("Error - Could not allocate a new Virtual Memory Addressing Table!\r\n");
         exit(-1);
@@ -35,9 +36,16 @@ vmTable_t* createVMtable(int length)
 */
 void freeVMtable(vmTable_t** table)
 {
-    free((*table)->pageNumArr);
-    free((*table)->frameNumArr);
-    free(table);
+    if ((*table)->pageNumArr != NULL) {
+        free((*table)->pageNumArr);
+    }
+    if ((*table)->frameNumArr != NULL) {
+        free((*table)->frameNumArr);
+    }
+    if ((*table)->entryAgeArr != NULL) {
+        free((*table)->entryAgeArr);
+    }
+    free(*table);
 }
 /*
     This function prints contents of the vmTable
@@ -46,14 +54,14 @@ void freeVMtable(vmTable_t** table)
 */
 void displayTable(vmTable_t** tableToView)
 {
-    printf("\n********************* TABLE or BUFFER START ****************************\n ");
+    printf("\n********************* SEQUENCE START ****************************\n ");
     for (int i = 0; i < (*tableToView)->length; i++) {
         printf("Index(%d) := Page Number: %d\tFrame Number: %d\n", i, (*tableToView)->pageNumArr[i], (*tableToView)->frameNumArr[i]);
     }
-    printf("\n********************* TABLE or BUFFER END ***************************\n ");
+    printf("\n********************* SEQUENCE END ***************************\n ");
 }
 
-/* DECIDED NOT TO USE -- Too Complex to Implement, but keeping JIC I want to use/fix later
+/* DECIDED NOT TO USE DUE TO COMPLEXITY
 
 // Initializes dramMatrix
 dramMatrix* createDRAMmatrix(int frameCount, int frameSize)
@@ -86,13 +94,13 @@ int** dramAllocate(int frameCount, int blockSize)
 {
     int** temp;
     temp = malloc(frameCount * sizeof(int*));
-    for(int i = 0; i< frameCount; i++) {
+    for(int i = 0; i < frameCount; i++) {
         temp[i] = (int*)malloc(sizeof(int) * blockSize);
         for(int j = 0; j < blockSize; j++) {
             temp[i][j] = 0;
         }
     }
-    // If there is not enough memory to make call to malloc(), we must free memory
+    // If there is not enough memory to make call to malloc() // Notify and exit
     if(temp == NULL) {
         printf("Error - Could not allocate a new Physical Memory Matrix using dramAllocate() function!\r\n");
         exit(-1);
@@ -108,7 +116,9 @@ int** dramAllocate(int frameCount, int blockSize)
 void freeDRAM(int*** dblPtrArr, int frameCount)
 {
   for (int i = 0; i < frameCount; i++) {
-      free((*dblPtrArr)[i]);
+      if ((*dblPtrArr)[i] != NULL) {
+          free((*dblPtrArr)[i]);
+      }
   }
   free(*dblPtrArr);
 }

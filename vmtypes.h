@@ -8,6 +8,7 @@
 typedef struct vmTable_t {
     int *pageNumArr; // page number array
     int *frameNumArr; // frame number array for this
+    int *entryAgeArr; // Age of each index
     int length;
     int pageFaultCount;
     int tlbHitCount;
