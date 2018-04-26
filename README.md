@@ -68,7 +68,7 @@ TLB Size: 16 entries
 Number of Physical Frames: 256
 Physical Memory Size: 65536 bytes
 Display All Physical Addresses? [y/n]: n
-Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: <b>1</b>
+Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: **1**
 ```
 #### User chooses Display Option and TLB Replacement Strategy 
 
