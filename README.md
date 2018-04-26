@@ -36,11 +36,11 @@ For example, if a logical address with page number 15 triggers a page fault, you
 
 ## Compilation and Program Execution
 
-    [ ] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
-    [ ] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
-    [ ] Created Makefile with gcc as Constant
-    [ ] SIMPLY download this project and execute `make` in command line
-    [ ] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
+- [ ] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
+- [ ] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
+- [ ] Created Makefile with gcc as Constant
+- [ ] SIMPLY download this project and execute `make` in command line
+- [ ] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
 
 ## Relevant Sources Cited
 
