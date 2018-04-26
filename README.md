@@ -18,10 +18,15 @@ The program reads a file containing a list of 32-bit integer numbers, which repr
 The page table size is 28; the TLB contains 16 entries. The page size is 28 bytes, which is the same as the frame size. There are a total of 256 frames in the physical memory, meaning that the total physical memory capability is 65,536 bytes (i.e., 256 frames * 256 bytes/frame). The system parameters of the simulated virtual memory is summarized below.
 
 > Page table size: 28
+
 > Number of TLB entries: 16
+
 > Page size: 28 bytes
+
 > Frame size: 28 bytes
+
 > Number of frames: 256
+
 > Physical memory size: 65,536 bytes
 
 ## How Page Faults are Handled
