@@ -2,7 +2,7 @@
 A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2^(16) - 1. This file is the main Program file and uses the associated vmtypes.h/.c files to implement data structure design for the Physical Memory, TLB, and Page Table.
 
 ## Overview
-This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a file containing a list of logical addresses ([InputFile.txt](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt)), (2) translate logical addresses into physical addresses for a virtual address space of size 216 = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
+This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a [file](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt) containing a list of logical addresses, (2) translate logical addresses into physical addresses for a virtual address space of size 216 = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
 
 ## Information about the Simulated Virtual Memory
 16-bit Logical Addresses
@@ -36,22 +36,22 @@ For example, if a logical address with page number 15 triggers a page fault, you
 
 ## Compilation and Program Execution
 
-[x] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
-[x] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
-[x] Created Makefile with gcc as Constant
-[x] SIMPLY download this project and execute `make` in command line
-[x] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
+* [x] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
+* [x] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
+* [x] Created Makefile with gcc as Constant
+* [x] SIMPLY download this project and execute `make` in command line
+* [x] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
 
-### Relevant Sources Cited
+## Relevant Sources Cited
 
-(1) [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
-(2) [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
-(3) [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
-(4) [More dynamic allocation](https://www.youtube.com/watch?v=t72BzxMAQKs)
-(5) [Double Pointer Return Type](https://stackoverflow.com/a/4339353)
-(6) [How to Perform Bit Masking](https://stackoverflow.com/a/10493604)
-(7) [Proper malloc() error output and exiting](https://stackoverflow.com/a/2574771)
-(8) [How to use fgets() function](https://stackoverflow.com/a/19609987)
+* (1) [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
+* (2) [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
+* (3) [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
+* (4) [More dynamic allocation](https://www.youtube.com/watch?v=t72BzxMAQKs)
+* (5) [Double Pointer Return Type](https://stackoverflow.com/a/4339353)
+* (6) [How to Perform Bit Masking](https://stackoverflow.com/a/10493604)
+* (7) [Proper malloc() error output and exiting](https://stackoverflow.com/a/2574771)
+* (8) [How to use fgets() function](https://stackoverflow.com/a/19609987)
 
 ## Sample Input/Output
 
