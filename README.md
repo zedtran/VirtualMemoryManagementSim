@@ -1,5 +1,5 @@
 # VirtualMemoryManagementSim
-A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2^(16) - 1. This file is the main Program file and uses the associated vmtypes.h/.c files to implement data structure design for the Physical Memory, TLB, and Page Table.
+A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2^(16) - 1. 
 
 ## Overview
 This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a [file](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt) containing a list of logical addresses, (2) translate logical addresses into physical addresses for a virtual address space of size 216 = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
