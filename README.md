@@ -112,7 +112,7 @@ Average time spent retrieving data from backing store: 4.598 millisec
 
 ### Displayed Physical Addresses
 
-If user chooses to display physical addresses, the following will display will immediately precede the results output:
+If user chooses to display physical addresses, a similar output will immediately precede the results:
 
 ```
 -----------------------------------------------------------------------------------
