@@ -3,7 +3,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <alloca.h>
+#include <time.h>
 #include "vmtypes.h"
+
 
 /*
     File:           vm_sim.c
@@ -39,6 +41,7 @@ typedef enum { false = 0, true = !false } bool; // Simple true or false boolean 
 vmTable_t* tlbTable; // The TLB Structure
 vmTable_t* pageTable; // The Page Table
 int** dram; // Physical Memory
+
 char algo_choice; // menu stdin
 char display_choice; // menu stdin
 
@@ -57,6 +60,11 @@ int virtual_addr;
 int page_number;
 int offset_number;
 
+// Generating length of time for a function
+clock_t start, end;
+double cpu_time_used;
+int functionCallCount = 0;
+
 // the buffer containing reads from backing store
 signed char fileReadBuffer[PAGE_READ_SIZE];
 
@@ -69,6 +77,7 @@ void readFromStore(int pageNumber);
 void tlbFIFOinsert(int pageNumber, int frameNumber);
 void tlbLRUinsert(int pageNumber, int frameNumber);
 int getOldestEntry(int tlbSize);
+double getAvgTimeInBackingStore();
 
 
 // main opens necessary files and calls on translateAddress for every entry in the addresses file
@@ -152,6 +161,7 @@ int main(int argc, char *argv[])
     printf("Page Fault Rate = %.3f %%\n",pfRate * 100);
     printf("TLB Hits = %d\n", tlbTable->tlbHitCount);
     printf("TLB Hit Rate = %.3f %%\n", TLBRate * 100);
+    printf("Average time spent retrieving data from backing store: %.3f millisec\n", getAvgTimeInBackingStore());
     printf("\n-----------------------------------------------------------------------------------\n");
 
     // close the input file and backing store
@@ -205,9 +215,12 @@ void translateAddress()
         }
         // NOTE: Page Table Fault Encountered
         if(frame_number == -1) {  // if the page is not found in those contents
-            // page fault, call to readFromStore to get the frame into physical memory and the page table
-            readFromStore(page_number);
             pageTable->pageFaultCount++;   // Increment the number of page faults
+            // page fault, call to readFromStore to get the frame into physical memory and the page table
+            start = clock();
+            readFromStore(page_number);
+            cpu_time_used += (double)(clock() - start) / CLOCKS_PER_SEC;
+            functionCallCount++;
             frame_number = nextFrame - 1;  // And set the frame_number to the current nextFrame index
         }
     }
@@ -257,6 +270,8 @@ void readFromStore(int pageNumber)
     // increment the counters that track the next available frames
     nextFrame++;
     nextPage++;
+
+
 }
 
 
@@ -363,7 +378,6 @@ void tlbLRUinsert(int pageNumber, int frameNumber)
     }
 }
 
-
 // Finds the oldest entry in TLB and returns the replacement Index
 int getOldestEntry(int tlbSize) {
   int i, max, index;
@@ -378,4 +392,10 @@ int getOldestEntry(int tlbSize) {
     }
   }
   return index;
+}
+
+// Just computes the average time complexity of accessing the backing store
+double getAvgTimeInBackingStore() {
+    double temp = (double) cpu_time_used / (double) functionCallCount;
+    return temp * 1000000;
 }
