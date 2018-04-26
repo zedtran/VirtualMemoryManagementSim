@@ -35,6 +35,7 @@ This virtual memory system implements demand paging. The backing store is simula
 For example, if a logical address with page number 15 triggers a page fault, your virtual memory system will read in page 15 from the file BACKING_STORE. Then, the loaded page frame is placed in the physical memory. After the page frame is fetched from the disk, the page table and the TLB will be updated accordingly. Subsequent access of page 15 will be referenced by accessing either the TLB or the page table.
 
 ## Compilation and Program Execution
+
 [x] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
 [x] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
 [x] Created Makefile with gcc as Constant
@@ -42,6 +43,7 @@ For example, if a logical address with page number 15 triggers a page fault, you
 [x] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
 
 ### Relevant Sources Cited
+
 (1) [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
 (2) [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
 (3) [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
