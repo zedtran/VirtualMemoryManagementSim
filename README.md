@@ -36,22 +36,24 @@ For example, if a logical address with page number 15 triggers a page fault, you
 
 ## Compilation and Program Execution
 
-* [x] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
-* [x] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
-* [x] Created Makefile with gcc as Constant
-* [x] SIMPLY download this project and execute `make` in command line
-* [x] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
+  [.] Compiled and tested using clang compiler: `$ clang -o vm_sim vm_sim.c vmtypes.c`
+  [.] ALSO Compiled and tested using gcc: `$ gcc -o vm_sim vm_sim.c vmtypes.c`
+  [.] Created Makefile with gcc as Constant
+  [.] SIMPLY download this project and execute `make` in command line
+  [.] Execute program with `$ ./vm_sim InputFile.txt` or use an appropriate `[input].txt` file
 
 ## Relevant Sources Cited
 
-* (1) [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
-* (2) [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
-* (3) [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
-* (4) [More dynamic allocation](https://www.youtube.com/watch?v=t72BzxMAQKs)
-* (5) [Double Pointer Return Type](https://stackoverflow.com/a/4339353)
-* (6) [How to Perform Bit Masking](https://stackoverflow.com/a/10493604)
-* (7) [Proper malloc() error output and exiting](https://stackoverflow.com/a/2574771)
-* (8) [How to use fgets() function](https://stackoverflow.com/a/19609987)
+  (P) [For how to create smart arrays](https://www.youtube.com/watch?v=QhwFwWpq4dQ)
+  (P) [Dynamic Allocation of 2D Array in struct](https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/)
+  (P) [For creating physical memory struct](https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf)
+  (P) [More dynamic allocation](https://www.youtube.com/watch?v=t72BzxMAQKs)
+  (P) [Double Pointer Return Type](https://stackoverflow.com/a/4339353)
+  (P) [How to Perform Bit Masking](https://stackoverflow.com/a/10493604)
+  (P) [Proper malloc() error output and exiting](https://stackoverflow.com/a/2574771)
+  (P) [How to use fgets() function](https://stackoverflow.com/a/19609987)
+  (P) [How to measure clock time](https://stackoverflow.com/a/12743207)
+  (P)  ==NOTE==: Other sources were also used to gain understanding of Virtual Memory Management concepts
 
 ## Sample Input/Output
 
