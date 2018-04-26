@@ -8,18 +8,27 @@ This project is the design and implemtation of a standalone virtual memory manag
 16-bit Logical Addresses
 The program reads a file containing a list of 32-bit integer numbers, which represent 32-bit logical addresses. It should be noted that the program only deals with 16-bit addresses. Thus, this simulation implements masking for the rightmost 16 bits of each logical address loaded from the file.
 
-| Page Number | Offset     |
-| :------:    | :------:   |
-| Bits 15 - 8 | Bits 7 - 0 | 
+                            |           Page Number |           Offset     |
+                            |           :------:    |           :------:   |
+                            |           Bits 15 - 8 |           Bits 7 - 0 | 
 
 ## System Parameters of the Virtual Memory
 The page table size is 28; the TLB contains 16 entries. The page size is 28 bytes, which is the same as the frame size. There are a total of 256 frames in the physical memory, meaning that the total physical memory capability is 65,536 bytes (i.e., 256 frames * 256 bytes/frame). The system parameters of the simulated virtual memory is summarized below.
-• Page table size: 28
-• Number of TLB entries: 16
-• Page size: 28 bytes
-• Frame size: 28 bytes
-• Number of frames: 256
-• Physical memory size: 65,536 bytes
+> Page table size: 28
+> Number of TLB entries: 16
+> Page size: 28 bytes
+> Frame size: 28 bytes
+> Number of frames: 256
+> Physical memory size: 65,536 bytes
+
+## How Page Faults are Handled
+This virtual memory system implements demand paging. The backing store is simulated by a file called “BACKING_STORE.bin”. BACKING_STORE is a binary file of 65,536 bytes. When a page fault occurs, the virtual memory system will perform the following four steps:
+    * Step 1: read a 256-byte page from the file BACKING_STORE and
+    * Step 2: store the loaded page frame in the physical memory.
+    * Step 3: Update the page table
+    * Step 4: Update the TLB
+
+For example, if a logical address with page number 15 triggers a page fault, your virtual memory system will read in page 15 from the file BACKING_STORE. Then, the loaded page frame is placed in the physical memory. After the page frame is fetched from the disk, the page table and the TLB will be updated accordingly. Subsequent access of page 15 will be referenced by accessing either the TLB or the page table.
 
 ### Sample Input/Output
 
