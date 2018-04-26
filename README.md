@@ -5,7 +5,7 @@ A C-Program that simulates Virtual Memory Management based on a text file input 
 This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a [file](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt) containing a list of logical addresses, (2) translate logical addresses into physical addresses for a virtual address space of size 2<sup>16</sup> = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
 
 ## Information about the Simulated Virtual Memory
-16-bit Logical Addresses
+#### 16-bit Logical Addresses
 The program reads a file containing a list of 32-bit integer numbers, which represent 32-bit logical addresses. It should be noted that the program only deals with 16-bit addresses. Thus, this simulation implements masking for the rightmost 16 bits of each logical address loaded from the file.
 
 
@@ -15,7 +15,7 @@ The program reads a file containing a list of 32-bit integer numbers, which repr
 
 
 ## System Parameters of the Virtual Memory
-The page table size is 2^8^; the TLB contains 16 entries. The page size is 2^8^ bytes, which is the same as the frame size. There are a total of 256 frames in the physical memory, meaning that the total physical memory capability is 65,536 bytes (i.e., 256 frames * 256 bytes/frame). The system parameters of the simulated virtual memory is summarized below.
+The page table size is 2<sup>8</sup> bytes; the TLB contains 16 entries. The page size is 2^8^ bytes, which is the same as the frame size. There are a total of 256 frames in the physical memory, meaning that the total physical memory capability is 65,536 bytes (i.e., 256 frames * 256 bytes/frame). The system parameters of the simulated virtual memory is summarized below.
 
 * Page table size: _2<sup>8</sup>_
 * Number of TLB entries: _16_
