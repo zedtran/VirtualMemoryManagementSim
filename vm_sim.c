@@ -10,40 +10,6 @@
     Name:           Tran, Don
     Date:           20 April 2018
     Course:         COMP3500 - See: www.eng.auburn.edu/files/acad_depts/csse/syllabi/comp3500.2016.pdf
-
-    Description:    A C-Program that simulates Virtual Memory Management based
-                    on a text file input of logical addresses which represents sequential
-                    instructions with address range 0 thru 2^(16) - 1. This file is the main Program
-                    file and uses the associated vmtypes.h/.c files to implement
-                    data structure design for the Physical Memory, TLB, and Page Table.
-
-                    The current design assumes the following:
-                    (1) Physical memory is represented by a 256 x 256 Matrix
-                    (2) TLB has 16 Possible Entries and can use either FIFO or LRU as a replacement strategy
-                    (3) Page Table has 256 entries
-                    (4) The current ISA uses 32-bit integers (although current implementation can handle 64-bit also)
-                        (a) The 16 high order bits are ignored
-                        (b) The 16 low order bits represent the logical/virtual address
-                            (b.1) The high order 8 bits represents the page # for TLB and Page Table
-                            (b.2) The low order 8 bits represents the physical memory offset
-
-    Souces Cited:
-        (1) For how to create smart arrays: https://www.youtube.com/watch?v=QhwFwWpq4dQ
-        (2) Dynamic Allocation of 2D Array in struct: https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/
-        (3) For creating physical memory struct:
-            https://www.cs.cmu.edu/~ab/15-123S09/lectures/Lecture%2011%20%20-%20%20Array%20of%20Linked%20Lists.pdf
-        (4) More dynamic allocation: https://www.youtube.com/watch?v=t72BzxMAQKs
-        (5) Double Pointer Return Type: https://stackoverflow.com/a/4339353
-        (6) How to Perform Bit Masking: https://stackoverflow.com/a/10493604
-        (7) Proper malloc() error output and exiting: https://stackoverflow.com/a/2574771
-        (8) How to use fgets() function: https://stackoverflow.com/a/19609987
-
-    COMPILE AND PROGRAM EXECUTION COMMANDS:
-        (1) Compiled and tested using clang compiler: $ clang -o vm_sim vm_sim.c vmtypes.c
-        (2) Executed program with command: $ ./vm_sim InputFile.txt
-        (3) Compiled and tested using gcc: $ gcc -o vm_sim vm_sim.c vmtypes.c
-        (4) Created Makefile with gcc as Constant
-
 */
 
 #define FRAME_SIZE        256       // Size of each frame
@@ -53,7 +19,7 @@
 #define SHIFT             8         // Amount to shift when bitmasking
 #define TLB_SIZE          16        // size of the TLB
 #define PAGE_TABLE_SIZE   256       // size of the page table
-#define MAX_ADDR_LEN      10         // The number of characters to read for each line from input file.
+#define MAX_ADDR_LEN      10        // The number of characters to read for each line from input file.
 #define PAGE_READ_SIZE    256       // Number of bytes to read
 
 typedef enum { false = 0, true = !false } bool; // Simple true or false boolean -- unsure if I want to use yet
