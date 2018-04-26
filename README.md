@@ -11,19 +11,19 @@ Page Table Size: 256
 TLB Size: 16 entries
 Number of Physical Frames: 256
 Physical Memory Size: 65536 bytes
-
 Display All Physical Addresses? [y/n]: n
-Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: 2
+Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: 1
 
--------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
+Results Using FIFO Algorithm:
 Number of translated addresses = 1000
 Page Faults = 244
 Page Fault Rate = 24.400 %
-TLB Hits = 56
-TLB Hit Rate = 5.600 %
+TLB Hits = 51
+TLB Hit Rate = 5.100 %
 
--------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 Welcome to Don's VM Simulator Version 1.0
 Number of logical pages: 256
@@ -32,24 +32,25 @@ Page Table Size: 256
 TLB Size: 16 entries
 Number of Physical Frames: 256
 Physical Memory Size: 65536 bytes
-
 Display All Physical Addresses? [y/n]: n
-Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: 1
+Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: 2
 
--------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
+Results Using LRU Algorithm:
 Number of translated addresses = 1000
 Page Faults = 244
 Page Fault Rate = 24.400 %
-TLB Hits = 51
-TLB Hit Rate = 5.100 %
+TLB Hits = 56
+TLB Hit Rate = 5.600 %
 
--------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 ```
 
 ### Displayed Physical Addresses
 
 ```
+-----------------------------------------------------------------------------------
 Virtual address: 16916		Physical address: 20		Value: 0
 Virtual address: 62493		Physical address: 285		Value: 0
 Virtual address: 30198		Physical address: 758		Value: 29
@@ -1050,5 +1051,5 @@ Virtual address: 8940		Physical address: 46572		Value: 0
 Virtual address: 9929		Physical address: 44745		Value: 0
 Virtual address: 45563		Physical address: 46075		Value: 126
 Virtual address: 12107		Physical address: 2635		Value: -46
--------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 ```

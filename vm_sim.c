@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
     pageTable = createVMtable(PAGE_TABLE_SIZE); // The Page Table
     dram = dramAllocate(TOTAL_FRAME_COUNT, FRAME_SIZE); // Physical Memory
     int translationCount = 0;
+    char* algoName;
 
     // perform basic error checking
     if (argc != 2) {
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
     address_file = fopen(argv[1], "r");
 
     if (address_file == NULL) {
-        fprintf(stderr, "Error opening InputFile.txt %s\n",argv[1]);
+        fprintf(stderr, "Error opening %s. Expecting [InputFile].txt or equivalent.\n",argv[1]);
         return -1;
     }
 
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
 
 
     do {
-        printf("\n\nDisplay All Physical Addresses? [y/n]: ");
+        printf("\nDisplay All Physical Addresses? [y/n]: ");
         scanf("\n%c", &display_choice);
     } while (display_choice != 'n' && display_choice != 'y');
 
@@ -166,9 +167,18 @@ int main(int argc, char *argv[])
         translationCount++;  // increment the number of translated addresses
     }
 
-    printf("\n---------------------------------------------------------------------------\n");
+    // Determining stdout algo name for Menu
+    if (algo_choice == '1') {
+        algoName = "FIFO";
+    }
+    else {
+        algoName = "LRU";
+    }
+
+    printf("\n-----------------------------------------------------------------------------------\n");
     // calculate and print out the stats
-    printf("\nNumber of translated addresses = %d\n", translationCount);
+    printf("\nResults Using %s Algorithm: \n", algoName);
+    printf("Number of translated addresses = %d\n", translationCount);
     double pfRate = (double)pageTable->pageFaultCount / (double)translationCount;
     double TLBRate = (double)tlbTable->tlbHitCount / (double)translationCount;
 
@@ -176,7 +186,7 @@ int main(int argc, char *argv[])
     printf("Page Fault Rate = %.3f %%\n",pfRate * 100);
     printf("TLB Hits = %d\n", tlbTable->tlbHitCount);
     printf("TLB Hit Rate = %.3f %%\n", TLBRate * 100);
-    printf("\n---------------------------------------------------------------------------\n");
+    printf("\n-----------------------------------------------------------------------------------\n");
 
     // close the input file and backing store
     fclose(address_file);
