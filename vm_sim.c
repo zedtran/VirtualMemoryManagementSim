@@ -39,8 +39,10 @@
         (8) How to use fgets() function: https://stackoverflow.com/a/19609987
 
     COMPILE AND PROGRAM EXECUTION COMMANDS:
-        (1) Compiled using clang compiler: $ clang -o vm_sim vm_sim.c vmtypes.c
+        (1) Compiled and tested using clang compiler: $ clang -o vm_sim vm_sim.c vmtypes.c
         (2) Executed program with command: $ ./vm_sim InputFile.txt
+        (3) Compiled and tested using gcc: $ gcc -o vm_sim vm_sim.c vmtypes.c
+        (4) Created Makefile with gcc as Constant
 
 */
 
@@ -164,7 +166,7 @@ int main(int argc, char *argv[])
         translationCount++;  // increment the number of translated addresses
     }
 
-    printf("\n-------------------------------------------------------------------\n");
+    printf("\n---------------------------------------------------------------------------\n");
     // calculate and print out the stats
     printf("\nNumber of translated addresses = %d\n", translationCount);
     double pfRate = (double)pageTable->pageFaultCount / (double)translationCount;
@@ -174,7 +176,7 @@ int main(int argc, char *argv[])
     printf("Page Fault Rate = %.3f %%\n",pfRate * 100);
     printf("TLB Hits = %d\n", tlbTable->tlbHitCount);
     printf("TLB Hit Rate = %.3f %%\n", TLBRate * 100);
-    printf("\n-------------------------------------------------------------------\n");
+    printf("\n---------------------------------------------------------------------------\n");
 
     // close the input file and backing store
     fclose(address_file);
