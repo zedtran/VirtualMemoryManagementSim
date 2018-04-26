@@ -355,8 +355,10 @@ void tlbLRUinsert(int pageNumber, int frameNumber)
         }
         else if (tlbTable->pageNumArr[i] == pageNumber) {
             // Entry is already in TLB -- Reset its age
-            tlbTable->entryAgeArr[i] = 0;
-            alreadyThere = true;
+            if(!alreadyThere) {
+                tlbTable->entryAgeArr[i] = 0;
+                alreadyThere = true;
+            }
         }
     }
 
