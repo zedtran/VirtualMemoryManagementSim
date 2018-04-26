@@ -22,10 +22,13 @@ vmTable_t* createVMtable(int length)
     new_table->tlbHitCount = 0;
     new_table->tlbMissCount = 0;
 
+<<<<<<< HEAD
     for (int i = 0; i < length; i++) {
         new_table->pageNumArr[i] = 0;
     }
 
+=======
+>>>>>>> c414da7eb0ac41260a6288557749fbd7ed296418
     // If there is not enough memory on the heap to make a call to malloc() // Notify and Exit
     if(new_table == NULL || new_table->pageNumArr == NULL || new_table->frameNumArr == NULL) {
         printf("Error - Could not allocate a new Virtual Memory Addressing Table!\r\n");
