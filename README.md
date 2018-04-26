@@ -1,5 +1,5 @@
 # VirtualMemoryManagementSim
-A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2<sup>16</sup> - 1. 
+A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2<sup>16</sup> - 1. See the [Project Report](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/ProjectReport.txt)for more details regarding usage. 
 
 ## Overview
 This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a [file](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt) containing a list of logical addresses, (2) translate logical addresses into physical addresses for a virtual address space of size 2<sup>16</sup> = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
@@ -57,6 +57,8 @@ For example, if a logical address with page number 15 triggers a page fault, you
 
 ## Sample Input/Output
 
+#### Upon Running the Program the user will be prompted with the following
+
 ```
 Welcome to Don's VM Simulator Version 1.0
 Number of logical pages: 256
@@ -66,19 +68,25 @@ TLB Size: 16 entries
 Number of Physical Frames: 256
 Physical Memory Size: 65536 bytes
 Display All Physical Addresses? [y/n]: n
-Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: 1
+Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: <b>1</b>
+```
+#### User chooses Display Option and TLB Replacement Strategy 
 
------------------------------------------------------------------------------------
+If FIFO is selected, program displays to console:
 
-Results Using FIFO Algorithm:
+```
+Results Using FIFO Algorithm: 
 Number of translated addresses = 1000
 Page Faults = 244
 Page Fault Rate = 24.400 %
 TLB Hits = 51
 TLB Hit Rate = 5.100 %
+Average time spent retrieving data from backing store: 5.537 millisec
 
------------------------------------------------------------------------------------
+```
+If LRU is selected, program displays to console:
 
+```
 Welcome to Don's VM Simulator Version 1.0
 Number of logical pages: 256
 Page size: 256 bytes
@@ -91,17 +99,20 @@ Choose TLB Replacement Strategy [1: FIFO, 2: LRU]: 2
 
 -----------------------------------------------------------------------------------
 
-Results Using LRU Algorithm:
+Results Using LRU Algorithm: 
 Number of translated addresses = 1000
 Page Faults = 244
 Page Fault Rate = 24.400 %
 TLB Hits = 56
 TLB Hit Rate = 5.600 %
+Average time spent retrieving data from backing store: 4.598 millisec
 
 -----------------------------------------------------------------------------------
 ```
 
 ### Displayed Physical Addresses
+
+If user chooses to display physical addresses, the following will display will immediately precede the results output:
 
 ```
 -----------------------------------------------------------------------------------
@@ -122,3 +133,4 @@ Virtual address: 27966		Physical address: 3390		Value: 27
 ...
 -----------------------------------------------------------------------------------
 ```
+
