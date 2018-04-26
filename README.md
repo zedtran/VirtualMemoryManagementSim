@@ -2,7 +2,7 @@
 A C-Program that simulates Virtual Memory Management based on a text file input of logical addresses which represents sequential instructions with address range 0 thru 2^(16) - 1. 
 
 ## Overview
-This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a [file](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt) containing a list of logical addresses, (2) translate logical addresses into physical addresses for a virtual address space of size 216 = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
+This project is the design and implementation of a standalone virtual memory manager, where there is a software-managed TLB. The program is responsible to (1) load a [file](https://github.com/zedtran/VirtualMemoryManagementSim/blob/master/InputFile.txt) containing a list of logical addresses, (2) translate logical addresses into physical addresses for a virtual address space of size 2^(16) = 65,536 bytes, and (3) output the value of the byte stored at the translated physical address.
 
 ## Information about the Simulated Virtual Memory
 16-bit Logical Addresses
