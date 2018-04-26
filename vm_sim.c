@@ -217,6 +217,7 @@ void translateAddress()
         read secondary storage (dram) and increment page table fault count.
     */
     if (frame_number == -1) {
+        tlbTable->tlbMissCount++; // Increment the miss count
         // walk the contents of the page table
         for(int i = 0; i < nextPage; i++){
             if(pageTable->pageNumArr[i] == page_number){  // If the page is found in those contents
